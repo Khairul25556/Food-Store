@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Food Store</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="favicon.ico" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">Food<span>Store</span></div>
+    <div class="top-actions">
+      <input id="search" type="search" placeholder="Search products..." aria-label="Search products" />
+      <a id="whatsapp" class="icon-btn" href="#" target="_blank" rel="noopener" title="Chat on WhatsApp">WA</a>
+      <a id="facebook" class="icon-btn" href="#" target="_blank" rel="noopener" title="Facebook page">FB</a>
+    </div>
+  </header>
+
+  <div class="discount-bar" id="discountBar" aria-live="polite">
+    <div id="discountText">Loading discounts...</div>
+  </div>
+
+  <main class="container">
+    <section id="productsGrid" class="grid"></section>
+  </main>
+
+  <footer class="footer">&copy; <span id="year"></span> Food Store — All rights reserved</footer>
+
+  <script src="app.js" defer></script>
+</body>
+</html>

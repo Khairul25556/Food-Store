@@ -1,0 +1,50 @@
+[
+{
+"id": 1,
+"name": "Premium Basmati Rice",
+"price_per_kg": 120.50,
+"image": "images/orange.jpg",
+"description": "Long-grain aromatic basmati rice sourced from best farms.",
+"discount": 10
+},
+{
+"id": 2,
+"name": "Organic Lentils (Masoor)",
+"price_per_kg": 95.00,
+"image": "images/apple.avif",
+"description": "Clean and high-protein lentils, perfect for daily meals.",
+"discount": 0
+},
+{
+"id": 3,
+"name": "Deshi Mustard Oil",
+"price_per_kg": 210.00,
+"image": "images/apple.avif",
+"description": "Cold-pressed mustard oil with rich flavor.",
+"discount": 15
+},
+{
+"id": 4,
+"name": "Premium Basmati Rice",
+"price_per_kg": 120.50,
+"image": "images/orange.jpg",
+"description": "Long-grain aromatic basmati rice sourced from best farms.",
+"discount": 10
+},
+{
+"id": 5,
+"name": "Premium Basmati Rice",
+"price_per_kg": 120.50,
+"image": "https://res.cloudinary.com/dayiwwvrv/image/upload/v1756303194/toyota-supra-neon-lights-4k-wallpaper-8f3cb2bfbd9925b8076dc2c4f4436050_u53jye.jpg",
+"description": "Long-grain aromatic basmati rice sourced from best farms.",
+"discount": 10
+},
+{
+"id": 6,
+"name": "Orange",
+"price_per_kg": 120.50,
+"image": "images/astro.jpg",
+"description": "Long-grain aromatic basmati rice sourced from best farms.",
+"discount": 10
+}
+]
