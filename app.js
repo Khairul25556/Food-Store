@@ -1,7 +1,11 @@
-const DATA_URL = './products.json';
+
+
+// ================= CONFIG =================
+const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTJpocpnaaKNWJWGu4GpygD04YUa-tMjRfOrGN-QLWW8RwU9_QETOQ-OgPA1kVHgMebgJH4a9qE_k0d/pub?gid=0&single=true&output=csv';
 const whatsappNumber = '8801673064324'; // change if needed
 const facebookLink = '#';
 
+// ================= DOM ELEMENTS =================
 document.getElementById('year').textContent = new Date().getFullYear();
 
 const whatsappBtn = document.getElementById('whatsapp');
@@ -13,23 +17,59 @@ const discountText = document.getElementById('discountText');
 whatsappBtn.href = `https://wa.me/${whatsappNumber}`;
 facebookBtn.href = facebookLink;
 
+// ================= DATA =================
 let products = [];
 
-async function loadProducts(){
-  try{
-    const res = await fetch(DATA_URL);
-    products = await res.json();
+// ================= FETCH PRODUCTS =================
+async function loadProducts() {
+  try {
+    const res = await fetch(SHEET_URL);
+    const text = await res.text();
+    products = csvToJson(text);
+    if (!products.length) {
+      productsGrid.innerHTML = '<p style="grid-column:1/-1">No products found.</p>';
+      discountText.textContent = 'No discounts available.';
+      return;
+    }
     renderProducts(products);
     renderDiscounts(products);
-  }catch(err){
-    productsGrid.innerHTML = '<p style="grid-column:1/-1">Failed to load products. Make sure products.json is available on the server.</p>'
-    discountText.textContent = 'No discounts available.'
+  } catch (err) {
     console.error(err);
+    productsGrid.innerHTML = '<p style="grid-column:1/-1">Failed to load products from sheet.</p>';
+    discountText.textContent = 'No discounts available.';
   }
 }
 
-function renderProducts(list){
-  if(!list.length){ productsGrid.innerHTML = '<p style="grid-column:1/-1">No products found.</p>'; return }
+// ================= CSV TO JSON =================
+function csvToJson(csvText) {
+  const lines = csvText.trim().split('\n');
+  const headers = lines[0].split(',').map(h => h.trim());
+
+  return lines.slice(1)
+    .map(line => {
+      if (!line.trim()) return null; // skip empty lines
+      const data = line.split(',').map(d => d.trim());
+      const obj = {};
+      headers.forEach((h, i) => {
+        if (h === 'price_per_kg' || h === 'discount') {
+          obj[h] = Number(data[i]) || 0;
+        } else if (h === 'id') {
+          obj[h] = data[i]; // keep id as string
+        } else {
+          obj[h] = data[i] || '';
+        }
+      });
+      return obj;
+    })
+    .filter(x => x); // remove nulls from empty rows
+}
+
+// ================= RENDER PRODUCTS =================
+function renderProducts(list) {
+  if (!list.length) {
+    productsGrid.innerHTML = '<p style="grid-column:1/-1">No products found.</p>';
+    return;
+  }
   productsGrid.innerHTML = list.map(p => `
     <article class="card" aria-labelledby="name-${p.id}">
       <img src="${p.image}" alt="${escapeHtml(p.name)}" />
@@ -40,30 +80,39 @@ function renderProducts(list){
         <div>${p.discount ? `<small>${p.discount}% off</small>` : ''}</div>
       </div>
     </article>
-  `).join('')
+  `).join('');
 }
 
-function renderDiscounts(list){
+// ================= RENDER DISCOUNTS =================
+function renderDiscounts(list) {
   const discounted = list.filter(p => p.discount && p.discount > 0);
-  if(!discounted.length){ discountText.textContent = 'No active discounts.'; return }
-  // show highest discount first
-  discounted.sort((a,b)=>b.discount-a.discount);
+  if (!discounted.length) {
+    discountText.textContent = 'No active discounts.';
+    return;
+  }
+  discounted.sort((a, b) => b.discount - a.discount);
   const first = discounted[0];
   discountText.textContent = ` ${first.discount}% discount on '${first.name}' `;
 }
 
+// ================= SEARCH =================
 searchInput.addEventListener('input', e => {
   const q = e.target.value.trim().toLowerCase();
-  const filtered = products.filter(p => p.name.toLowerCase().includes(q) || (p.description||'').toLowerCase().includes(q));
+  const filtered = products.filter(p =>
+    p.name.toLowerCase().includes(q) ||
+    (p.description || '').toLowerCase().includes(q)
+  );
   renderProducts(filtered);
-})
+});
 
-function formatPrice(v){
+// ================= HELPERS =================
+function formatPrice(v) {
   return Number(v).toFixed(2);
 }
 
-function escapeHtml(s){
-  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 }
 
+// ================= INIT =================
 loadProducts();
